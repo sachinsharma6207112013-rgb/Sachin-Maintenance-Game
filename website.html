@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semantic Holy Grail Layout</title>
+<style>
+  /* 
+    MODERN CSS RESET
+    Based on Andy Bell's (Piccalil.li) Modern CSS Reset 
+    Source: [[1]],
+  */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  * {
+    margin: 0;
+  }
+
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input, button, textarea, select {
+    font: inherit;
+  }
+
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    text-wrap: balance; /* Prevent widow words in headings [1] */
+  }
+
+  /* 
+    DESIGN TOKENS & ACCESSIBLE PALETTE
+    High contrast colors verified for WCAG AA/AAA compliance.
+    Source: [[7]],
+  */
+  :root {
+    --color-header-bg: #1b365d; /* Dark Blue */
+    --color-header-text: #ffffff;
+    
+    --color-nav-bg: #f2c75c; /* Yellow */
+    --color-nav-text: #000000;
+    
+    --color-main-bg: #ffffff;
+    --color-text: #333333;
+    
+    --color-sidebar-bg: #f0f2f5; /* Light Gray */
+    --color-sidebar-text: #000000;
+    
+    --color-footer-bg: #000000;
+    --color-footer-text: #ffffff;
+
+    --gap-size: 1rem;
+    --max-width: 1200px;
+  }
+
+  /* 
+    ACCESSIBILITY: SKIP LINK
+    Allows keyboard users to bypass navigation.
+    Source: [2]
+  */
+ .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-header-bg);
+    color: var(--color-header-text);
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.2s;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+ .skip-link:focus {
+    top: 0;
+  }
+
+  /* 
+    CORE GRID LAYOUT 
+    Implements the "Holy Grail" structure using grid-template-areas.
+    Source: [3]
+  */
+ .site-wrapper {
+    display: grid;
+    min-height: 100vh;
+    /* 
+       Row Definitions:
+       auto: Header fits content
+       auto: Nav fits content
+       1fr:  Main content stretches to fill screen
+       auto: Footer fits content
+    */
+    grid-template-rows: auto auto 1fr auto; 
+    gap: var(--gap-size);
+    
+    /* Mobile First: Single Column Stack */
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "header"
+      "nav"
+      "main"
+      "sidebar"
+      "footer";
+  }
+
+  /* 
+    RESPONSIVE BREAKPOINT (Desktop)
+    Switches to the multi-column layout shown in the diagram.
+    Source: [3]
+  */
+  @media (min-width: 768px) {
+   .site-wrapper {
+      /* 
+         Column Definitions: 
+         1fr: Main content (flexible)
+         300px: Sidebar (fixed width)
+      */
+      grid-template-columns: 1fr 300px;
+      grid-template-areas: 
+        "header header"
+        "nav    nav"
+        "main   sidebar"
+        "footer footer";
+    }
+  }
+
+  /* 
+    SEMANTIC REGION STYLING 
+  */
+  
+  /* Header */
+ .region-header {
+    grid-area: header;
+    background-color: var(--color-header-bg);
+    color: var(--color-header-text);
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  /* Navigation */
+ .region-nav {
+    grid-area: nav;
+    background-color: var(--color-nav-bg);
+    color: var(--color-nav-text);
+    padding: 1rem;
+  }
+
+ .nav-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+ .nav-list a {
+    color: var(--color-nav-text);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.5rem;
+  }
+  
+ .nav-list a:hover {
+    text-decoration: underline;
+  }
+
+  /* Main Content Wrapper */
+ .region-main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-size);
+    padding: 0 1rem;
+    /* Main serves as the container for Section and Article */
+  }
+
+  /* Section & Article Styling */
+  section, article {
+    background-color: var(--color-main-bg);
+    border: 1px solid #ddd;
+    padding: 1.5rem;
+    border-radius: 4px;
+  }
+
+  h2 { margin-bottom: 0.5rem; }
+
+  /* Sidebar (Aside) */
+ .region-sidebar {
+    grid-area: sidebar;
+    background-color: var(--color-sidebar-bg);
+    color: var(--color-sidebar-text);
+    padding: 1.5rem;
+    border-radius: 4px;
+  }
+
+  /* Footer */
+ .region-footer {
+    grid-area: footer;
+    background-color: var(--color-footer-bg);
+    color: var(--color-footer-text);
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto; /* Fallback for sticky footer */
+  }
+  
+  /* VISUAL DEMO UTILITY (Optional: helps match the diagram look) */
+ .label {
+    display: inline-block;
+    background: rgba(0,0,0,0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+</style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Skip to Main Content</a>
+
+  <div class="site-wrapper">
+    
+    <header class="region-header">
+      <span class="label">&lt;header&gt;</span>
+      <h1>Website Title</h1>
+    </header>
+
+    <nav class="region-nav" aria-label="Main Navigation">
+      <ul class="nav-list">
+        <li><span class="label">&lt;nav&gt;</span></li>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <main id="main-content" class="region-main">
+      
+      <section>
+        <span class="label">&lt;section&gt;</span>
+        <h2>Introduction</h2>
+        <p>This section represents a thematic grouping of content. In the diagram, it sits at the top of the main column.</p>
+      </section>
+
+      <article>
+        <span class="label">&lt;article&gt;</span>
+        <h2>Latest News Post</h2>
+        <p>This article represents a self-contained composition. It can be independently distributed (e.g., via RSS).</p>
+        <p>It is stacked vertically below the section, sharing the main column width.</p>
+      </article>
+
+    </main>
+
+    <aside class="region-sidebar">
+      <span class="label">&lt;aside&gt;</span>
+      <h3>Sidebar</h3>
+      <p>Content tangentially related to the main content.</p>
+      <p>On desktop, this sits to the right of both the Section and Article.</p>
+      <p>On mobile, this stacks below the main content.</p>
+    </aside>
+
+    <footer class="region-footer">
+      <span class="label">&lt;footer&gt;</span>
+      <p>&copy; 2025 Web Architecture Demo. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
